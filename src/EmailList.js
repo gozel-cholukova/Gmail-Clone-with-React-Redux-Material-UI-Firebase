@@ -81,15 +81,12 @@ function EmailList() {
           description="test"
           time="2am"
         />
-
         <EmailRow 
           title="Boom"
           subject="hey yo"
           description="test"
           time="2am"
-        />
-
-        
+        />        
       </div>
     </div>
   );
