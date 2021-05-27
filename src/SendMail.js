@@ -5,13 +5,22 @@ import { Button } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import { closeSendMessage } from './features/mailSlice';
 import { useDispatch } from 'react-redux';
+import { db } from './firebase';
+import firebase from 'firebase';
 
 function SendMail() {
-  const { register, handleSubmit, watch, formState: {errors} } = useForm();
+  const { register, handleSubmit, watch, formState: { errors }} = useForm();
   const dispatch = useDispatch();
 
   const onSubmit = (formData) => {
-
+    console.log(formData);
+    db.collection("emails").add({
+      to: formData.to,
+      subject: formData.subject,
+      message: formData.message,
+      timestamp: firebase.firestore.FieldValue.serverTimestmap(),
+    });
+    dispatch(closeSendMessage());
   };
 
   return (
@@ -25,36 +34,27 @@ function SendMail() {
       </div> 
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input 
-          name='to' 
+        <input           
           placeholder="To" 
           type="email" 
-          ref={register("name value", { required: true })} 
+          {...register("to", {required: true})} 
         />
-        {errors.to && 
-          <p className="sendMail__error">To is Required!</p>
-        }
+        {errors.to && <p className="sendMail__error">To is Required!</p>}
 
-        <input 
-          name='submit' 
+        <input           
           placeholder="Subject" 
           type="text" 
-          ref={register("name value", { required: true })} 
+          {...register("subject", {required: true})} 
         />
-        {errors.to && 
-          <p className="sendMail__error">Subject is Required!</p>
-        }
+        {errors.subject && <p className="sendMail__error">Subject is Required!</p>}
         
-        <input 
-          name='message'
+        <input           
           placeholder="Message..." 
           type="text" 
           className="sendMail__message"
-          ref={register("name value",{ required: true })} 
+          {...register("message", {required: true})} 
         />
-        {errors.to && 
-          <p className="sendMail__error">Message is Required!</p>
-        }
+        {errors.message && <p className="sendMail__error">Message is Required!</p>}
 
         <div className="sendMail__options">
           <Button 
